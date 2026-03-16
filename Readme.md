@@ -33,7 +33,6 @@ The repo already contains service wrappers and adapter surfaces for the followin
 | Model | Upstream |
 | --- | --- |
 | WorldFM | [inspatio/worldfm](https://github.com/inspatio/worldfm) |
-| Solaris | [solaris-wm/solaris](https://github.com/solaris-wm/solaris) |
 | Infinite-World | [MeiGen-AI/Infinite-World](https://github.com/MeiGen-AI/Infinite-World) |
 | LingBot-World | [Robbyant/lingbot-world](https://github.com/Robbyant/lingbot-world) |
 | YUME | [stdstu12/YUME](https://github.com/stdstu12/YUME) |

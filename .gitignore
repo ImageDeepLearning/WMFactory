@@ -1,0 +1,97 @@
+# Project-local documentation and source code should remain trackable.
+# Ignore large datasets, environments, caches, generated outputs, and media artifacts.
+
+# Core local-only directories
+/data/
+/outputs/
+/venvs/
+/.cache/
+/mnt/
+
+# Third-party model repos to keep local only
+/models/WonderWorld/
+/models/diamond/
+/models/solaris/
+/models/Matrix-Game/
+/models/YUME/
+/models/lingbot-world/
+/models/wham/
+
+# Python cache/build artifacts
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+build/
+dist/
+
+# Virtualenvs
+.venv/
+venv/
+env/
+ENV/
+
+# Notebook and editor noise
+.ipynb_checkpoints/
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Logs and temp files
+*.log
+*.out
+*.err
+*.tmp
+*.temp
+
+# Large generated media / arrays
+*.mp4
+*.npy
+*.npz
+
+# Common model/runtime artifacts that should not go to GitHub
+*.ckpt
+*.pt
+*.pth
+*.bin
+*.safetensors
+*.onnx
+*.h5
+*.msgpack
+*.whl
+*.pickle
+*.pkl
+*.ply
+
+# Model-local heavy artifacts
+models/**/checkpoints/
+models/**/weights/
+models/**/pretrained/
+models/**/outputs/
+models/**/outputs_*/
+models/**/output/
+models/**/results/
+models/**/results_*/
+models/**/logs/
+models/**/runs/
+models/**/.gradio/
+
+# Known model-local datasets / caches that are not source code
+/models/solaris/datasets/
+/models/Matrix-Game/Matrix-Game-1/GameWorldScore/GameWorld/third_party/amt/datasets/
+/models/Matrix-Game/Matrix-Game-1/GameWorldScore/GameWorld/third_party/umt/datasets/
+/models/Infinite-World/.cache/
+
+# Frontend package artifacts if introduced later
+node_modules/
+.next/
+coverage/

@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WMFactory Unified Frontend</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <section class="panel model-panel">
+          <h2>模型选择</h2>
+          <div class="row">
+            <select id="modelSelect"></select>
+            <button id="loadModelBtn">确认加载</button>
+          </div>
+          <p id="modelStatus" class="status">未加载模型</p>
+        </section>
+
+        <section class="panel input-panel">
+          <h2>输入图像 / 数据集</h2>
+          <div class="row">
+            <select id="sourceSelect"></select>
+            <button id="randomBtn">随机抽图</button>
+          </div>
+          <div class="row">
+            <input id="imageInput" type="file" accept="image/*" />
+            <button id="resetBtn">重置</button>
+          </div>
+        </section>
+      </header>
+
+      <main class="game-area panel">
+        <div class="game-header">
+          <h2>World View</h2>
+          <p id="gameStatus" class="status">等待会话启动</p>
+        </div>
+
+        <div class="viewport-wrap" id="viewportWrap">
+          <img id="frameView" alt="World frame" />
+          <div class="start-overlay" id="startOverlay">
+            <button id="startFloatingBtn" class="start-floating-btn">开始世界</button>
+          </div>
+
+          <div class="controls-overlay">
+            <div class="wasd-cluster">
+              <button class="key key-w" data-key="w">W</button>
+              <button class="key key-a" data-key="a">A</button>
+              <button class="key key-s" data-key="s">S</button>
+              <button class="key key-d" data-key="d">D</button>
+            </div>
+
+            <div class="camera-stick" id="cameraStick">
+              <div class="camera-ring"></div>
+              <div class="camera-knob" id="cameraKnob"></div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script src="/app.js" type="module"></script>
+  </body>
+</html>

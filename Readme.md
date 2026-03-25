@@ -132,6 +132,21 @@ The recommended path for every new model is:
 
 This avoids dependency conflicts, keeps environments isolated, and preserves one stable frontend.
 
+### Add Models with LLM-Assisted Workflow
+
+We strongly recommend using the prompts in [`prompts/`](./prompts) together with Claude Code or Codex for vibe coding when adding a new model to WMFactory.
+
+To improve the success rate of reproduction and integration, we found that the process becomes much more reliable if it is broken into three small and easy sub-tasks:
+
+- [`prompts/step1.md`](./prompts/step1.md)
+  - Ask the LLM to reproduce the model first and make sure it can successfully generate a video.
+- [`prompts/step2.md`](./prompts/step2.md)
+  - Ask the LLM to extract the interfaces needed for WMFactory integration and provide a rough speed estimate.
+- [`prompts/step3.md`](./prompts/step3.md)
+  - Ask the LLM to actually plug the world model into WMFactory.
+
+In practice, feeding these three prompts to a strong coding model in the same running context gives a surprisingly high success rate for onboarding a new world model into WMFactory.
+
 ## Quick Start
 
 Run the gateway from the frontend directory:

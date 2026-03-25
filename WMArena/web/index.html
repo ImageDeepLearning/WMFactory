@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WMArena</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="shell">
+      <header class="hero">
+        <div class="hero-copy">
+          <div class="mode-chip">WMArena / Side-by-Side</div>
+          <h1>世界模型对战竞技场</h1>
+          <p>选择两个模型，上传同一张初始图，使用一套共享控制器同步驱动左右两侧。</p>
+        </div>
+        <div class="hero-actions">
+          <button id="loadArenaBtn" class="primary-btn">加载双模型</button>
+          <button id="startBattleBtn" class="ghost-btn">开始对战</button>
+          <button id="resetBtn" class="ghost-btn">重置会话</button>
+        </div>
+      </header>
+
+      <section class="setup-grid">
+        <article class="panel selector-panel">
+          <div class="panel-kicker">LEFT</div>
+          <label class="field-label" for="leftModelSelect">左侧模型</label>
+          <select id="leftModelSelect"></select>
+          <p id="leftModelStatus" class="panel-status">未加载</p>
+        </article>
+
+        <article class="panel seed-panel">
+          <div class="panel-kicker">COMMON INIT</div>
+          <label class="field-label" for="imageInput">初始图像</label>
+          <input id="imageInput" type="file" accept="image/*" />
+          <div class="seed-preview-wrap">
+            <img id="seedPreview" alt="Initial seed preview" />
+          </div>
+          <p id="battleStatus" class="panel-status">先选择两个模型，再上传初始图像。</p>
+        </article>
+
+        <article class="panel selector-panel">
+          <div class="panel-kicker">RIGHT</div>
+          <label class="field-label" for="rightModelSelect">右侧模型</label>
+          <select id="rightModelSelect"></select>
+          <p id="rightModelStatus" class="panel-status">未加载</p>
+        </article>
+      </section>
+
+      <main class="arena panel">
+        <div class="arena-head">
+          <div class="arena-title">Battle View</div>
+          <div class="arena-note">同一份 action JSON 会被发送到左右两侧，并在两侧都返回后才接受下一次输入。</div>
+        </div>
+
+        <div class="split-stage">
+          <section class="viewport-card">
+            <div class="viewport-head">
+              <span id="leftLabel">左侧模型</span>
+              <span id="leftMeta" class="meta-pill">等待加载</span>
+            </div>
+            <div class="viewport-wrap">
+              <img id="leftFrameView" alt="Left model frame" />
+            </div>
+          </section>
+
+          <section class="viewport-card">
+            <div class="viewport-head">
+              <span id="rightLabel">右侧模型</span>
+              <span id="rightMeta" class="meta-pill">等待加载</span>
+            </div>
+            <div class="viewport-wrap">
+              <img id="rightFrameView" alt="Right model frame" />
+            </div>
+          </section>
+
+          <div id="startOverlay" class="start-overlay">
+            <div class="overlay-card">
+              <div class="overlay-eyebrow">Arena Locked</div>
+              <p>加载双模型并上传初始图像后开始对战。</p>
+              <button id="startFloatingBtn" class="primary-btn">开始世界</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="control-deck">
+          <div class="control-copy">
+            <div class="control-title">Shared Controller</div>
+            <p>一套 WASD 与视角控制，同时作用于左右两个世界模型。</p>
+          </div>
+
+          <div class="wasd-cluster">
+            <button class="key key-w" data-key="w">W</button>
+            <button class="key key-a" data-key="a">A</button>
+            <button class="key key-s" data-key="s">S</button>
+            <button class="key key-d" data-key="d">D</button>
+          </div>
+
+          <div class="camera-panel">
+            <div class="camera-copy">视角</div>
+            <div class="camera-stick" id="cameraStick">
+              <div class="camera-ring"></div>
+              <div class="camera-knob" id="cameraKnob"></div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script src="/app.js" type="module"></script>
+  </body>
+</html>

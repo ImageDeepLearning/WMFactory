@@ -132,6 +132,18 @@ The recommended path for every new model is:
 
 This avoids dependency conflicts, keeps environments isolated, and preserves one stable frontend.
 
+## Quick Start
+
+Run the gateway from the frontend directory:
+
+```bash
+cd frontend
+python -m uvicorn server:app --host 0.0.0.0 --port 8081
+```
+
+Then open the web app, select a model, select or upload an image, and start stepping through the generated world.
+
+
 ### Add Models with LLM-Assisted Workflow
 
 We strongly recommend using the prompts in [`prompts/`](./prompts) together with Claude Code or Codex for vibe coding when adding a new model to WMFactory.
@@ -147,21 +159,12 @@ To improve the success rate of reproduction and integration, we found that the p
 
 In practice, feeding these three prompts to a strong coding model in the same running context gives a surprisingly high success rate for onboarding a new world model into WMFactory.
 
-## Quick Start
-
-Run the gateway from the frontend directory:
-
-```bash
-cd frontend
-python -m uvicorn server:app --host 0.0.0.0 --port 8081
-```
-
-Then open the web app, select a model, select or upload an image, and start stepping through the generated world.
 
 ## Controls
 
 - `W / A / S / D`: movement
 - drag mouse: camera control
+
 
 
 ## Research Use Case

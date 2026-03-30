@@ -111,6 +111,12 @@ def list_models() -> Dict[str, Any]:
     return {
         "models": [
             {
+                "id": "worldfm",
+                "label": "WorldFM",
+                "status": "available",
+                "description": "Interactive multi-view frame generation (start runs step1-3, step runs action-driven frame update).",
+            },
+            {
                 "id": "diamond",
                 "label": "DIAMOND (CSGO)",
                 "status": "available",
@@ -163,12 +169,6 @@ def list_models() -> Dict[str, Any]:
                 "label": "HY-WorldPlay (WAN 5B)",
                 "status": "available",
                 "description": "Streaming first-person world model with native WorldPlay chunk memory and WASD/camera control.",
-            },
-            {
-                "id": "worldfm",
-                "label": "WorldFM",
-                "status": "available",
-                "description": "Interactive multi-view frame generation (start runs step1-3, step runs action-driven frame update).",
             },
             {
                 "id": "open-oasis",

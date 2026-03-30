@@ -12,7 +12,7 @@ from urllib.parse import urlparse
 
 import httpx
 
-from .base import StepResult, WorldModelAdapter
+from .base import StepResult, WorldModelAdapter, SERVICE_PYTHON
 from .runtime_utils import configure_subprocess_cuda
 
 
@@ -42,7 +42,8 @@ class WorldFMAdapter(WorldModelAdapter):
         self.service_host = os.getenv("WM_WORLDFM_HOST", parsed.hostname or "127.0.0.1")
         self.service_port = int(os.getenv("WM_WORLDFM_PORT", str(parsed.port or 9002)))
         self.service_dir = Path(os.getenv("WM_WORLDFM_SERVICE_DIR", str(ROOT / "services" / "worldfm")))
-        self.service_python = os.getenv("WM_WORLDFM_PYTHON", str(ROOT / "venvs" / "worldfm" / "bin" / "python"))
+        # self.service_python = os.getenv("WM_WORLDFM_PYTHON", str(ROOT / "venvs" / "worldfm" / "bin" / "python"))
+        self.service_python = os.getenv("WM_WORLDFM_PYTHON", SERVICE_PYTHON)
         self.service_log = Path(os.getenv("WM_WORLDFM_LOG", str(self.service_dir / "worldfm_service.log")))
         self.step_log_every = int(os.getenv("WM_WORLDFM_STEP_LOG_EVERY", "20"))
         self._step_counter = 0

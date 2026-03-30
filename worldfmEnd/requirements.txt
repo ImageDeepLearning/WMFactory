@@ -1,0 +1,4 @@
+# Install into the same environment as services/worldfm (torch, etc.).
+fastapi>=0.100
+uvicorn[standard]>=0.22
+pillow>=9.0

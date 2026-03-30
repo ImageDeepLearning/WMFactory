@@ -21,8 +21,18 @@
 只需启动网关：
 
 ```bash
+conda activate /home/mengfei/miniconda3/envs/WorldFM
 cd /mnt/server/WMFactory/frontend
 /mnt/server/WMFactory/venvs/diamond/bin/python -m uvicorn server:app --host 0.0.0.0 --port 8080
+
+conda activate /home/mengfei/miniconda3/envs/WorldFM
+export LD_LIBRARY_PATH="/home/mengfei/miniconda3/envs/WorldFM/lib:$LD_LIBRARY_PATH"
+cd frontend
+/home/mengfei/miniconda3/envs/WorldFM/bin/python -m uvicorn server:app --host 0.0.0.0 --port 8080
+
+conda activate /home/mengfei/miniconda3/envs/WorldFM
+export LD_LIBRARY_PATH="/home/mengfei/miniconda3/envs/WorldFM/lib:$LD_LIBRARY_PATH"
+/home/mengfei/miniconda3/envs/WorldFM/bin/python -m uvicorn worldfmEnd.server:app --host 0.0.0.0 --port 8889
 ```
 
 然后打开：
@@ -34,6 +44,9 @@ cd /mnt/server/WMFactory/frontend
 ```bash
 cd /mnt/server/WMFactory/services/diamond
 /mnt/server/WMFactory/venvs/diamond/bin/python -m uvicorn app:app --host 127.0.0.1 --port 9001
+
+cd /home/mengfei/WMFactory/services/worldfm
+/home/mengfei/miniconda3/envs/WorldFM/bin/python -m uvicorn app:app --host 127.0.0.1 --port 9002
 ```
 
 ## 关键环境变量

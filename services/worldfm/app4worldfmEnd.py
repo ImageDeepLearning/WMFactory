@@ -16,8 +16,6 @@ from typing import Any, Dict, Optional
 import numpy as np
 import torch
 from fastapi import FastAPI, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse
 from omegaconf import OmegaConf
 from PIL import Image
 from pydantic import BaseModel
@@ -191,13 +189,7 @@ class WorldFMRuntimeService:
                 session_id, init_image_base64, request_id=request_id, cache_key=cache_key
             )
             self._log(f"start_session done session_id={session_id}")
-            out: Dict[str, Any] = {"session_id": session_id, "frame_base64": frame}
-            sess = self._require_runtime().session
-            if sess is not None:
-                url = self._public_pointcloud_url(sess.session_id, sess.session_dir)
-                if url:
-                    out["pointcloud_ply_url"] = url
-            return out
+            return {"session_id": session_id, "frame_base64": frame}
         finally:
             with self._start_lock:
                 self._start_inflight = False
@@ -225,13 +217,7 @@ class WorldFMRuntimeService:
             frame = self._build_session(
                 session_id, init_image_base64, request_id=request_id, cache_key=ck
             )
-            out: Dict[str, Any] = {"session_id": session_id, "frame_base64": frame}
-            sess = self._require_runtime().session
-            if sess is not None:
-                url = self._public_pointcloud_url(sess.session_id, sess.session_dir)
-                if url:
-                    out["pointcloud_ply_url"] = url
-            return out
+            return {"session_id": session_id, "frame_base64": frame}
         finally:
             with self._start_lock:
                 self._start_inflight = False
@@ -690,38 +676,9 @@ class WorldFMRuntimeService:
         except Exception as exc:
             self._log(f"input downscale skipped due to error: {exc}")
 
-    def _pointcloud_ply_path(self, session_dir: Path) -> Path:
-        return session_dir / "pointcloud.ply"
-
-    def _public_pointcloud_url(self, session_id: str, session_dir: Path) -> Optional[str]:
-        base = os.getenv("WM_WORLDFM_PUBLIC_BASE_URL", "").strip()
-        if not base:
-            return None
-        ply = self._pointcloud_ply_path(session_dir)
-        if not ply.is_file():
-            return None
-        return f"{base.rstrip('/')}/sessions/{session_id}/pointcloud.ply"
-
 
 svc = WorldFMRuntimeService()
 app = FastAPI(title="WMFactory WorldFM Service")
-
-_cors_origins = [
-    "https://www.kinetix.cc",
-    "http://localhost:8000",
-    "http://127.0.0.1:8000",
-    "http://localhost:8080",
-    "http://127.0.0.1:8080",
-]
-_extra = os.getenv("WM_WORLDFM_CORS_EXTRA_ORIGINS", "").strip()
-if _extra:
-    _cors_origins.extend(o.strip() for o in _extra.split(",") if o.strip())
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=_cors_origins,
-    allow_methods=["GET", "OPTIONS", "POST"],
-    allow_headers=["*"],
-)
 
 
 @app.post("/health")
@@ -735,18 +692,6 @@ def load(_: LoadRequest) -> Dict[str, Any]:
         return svc.load()
     except Exception as exc:
         raise HTTPException(status_code=500, detail=str(exc)) from exc
-
-
-@app.get("/sessions/{session_id}/pointcloud.ply")
-def get_pointcloud_ply(session_id: str) -> FileResponse:
-    path = svc._runtime_root / session_id / "pointcloud.ply"
-    if not path.is_file():
-        raise HTTPException(status_code=404, detail="pointcloud.ply not found")
-    return FileResponse(
-        path,
-        media_type="application/octet-stream",
-        filename="pointcloud.ply",
-    )
 
 
 @app.post("/sessions/start")

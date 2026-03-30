@@ -1,5 +1,16 @@
 # WorldFM
 
+<br/>
+
+<div align="center">
+    <img src="resources/worldfm.jpg"/>
+</div>
+<br/>
+
+<div align="left">
+<div align="left">
+
+[![LICENSE](https://img.shields.io/github/license/inspatio/worldfm)](https://github.com/inspatio/worldfm/blob/main/LICENSE)  [![arXiv](https://img.shields.io/badge/arXiv-2603.11911-b31b1b.svg)](https://arxiv.org/abs/2603.11911)
 
 
 WorldFM, a real-time multi-view diffusion model. Given a reference image and target camera poses, WorldFM generates images at those new viewpoints. Checkout our website ([WorldFM](https://inspatio.github.io/worldfm)) for videos and interactive results!
@@ -69,6 +80,10 @@ Use `--step 1` or `--step 2` in `run_pipeline.py` to select the corresponding mo
 We provide a sample scene with a pre-defined camera trajectory in `demo/`. Run the following command to generate an MP4 video along the trajectory:
 
 ```bash
+conda activate /home/mengfei/miniconda3/envs/WorldFM
+export LD_LIBRARY_PATH="/home/mengfei/miniconda3/envs/WorldFM/lib:$LD_LIBRARY_PATH"
+python run_pipeline.py --meta demo/meta.json --output_dir outputs  --save_mode image
+
 python run_pipeline.py --meta demo/meta.json --output_dir outputs
 ```
 

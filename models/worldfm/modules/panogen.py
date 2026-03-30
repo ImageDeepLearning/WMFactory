@@ -168,13 +168,9 @@ class Image2PanoramaDemo:
 
         helper = None
         if self.args.cache:
-            n = int(self.num_inference_steps)
-            early = list(range(0, min(10, n)))
-            middle = list(range(10, min(40, n), 3)) if n > 10 else []
-            tail = list(range(40, n)) if n > 40 else []
             helper = DeepCacheHelper(
                 self.pipe.transformer,
-                no_cache_steps=early + middle + tail,
+                no_cache_steps=list(range(0, 10)) + list(range(10, 40, 3)) + list(range(40, 50)),
                 no_cache_block_id={"single": [38]},
             )
             helper.start_timestep = 0

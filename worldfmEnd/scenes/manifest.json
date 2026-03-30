@@ -1,0 +1,9 @@
+{
+  "scenes": [
+    {
+      "name": "mario",
+      "init_image": "mario.png",
+      "thumbnail": "/static/scenes/mario_thumb.jpg"
+    }
+  ]
+}

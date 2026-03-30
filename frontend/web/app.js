@@ -1,5 +1,5 @@
 const state = {
-  modelId: "diamond",
+  modelId: "worldfm",
   modelLoaded: false,
   sessionId: null,
   seedImage: null,
@@ -19,6 +19,7 @@ const state = {
   mineworldCameraLastX: 0,
   mineworldCameraLastY: 0,
   stepping: false,
+  pointcloudKinetixUrl: null,
 };
 
 const EMPTY_FRAME_DATA_URL =
@@ -42,6 +43,7 @@ const el = {
   randomBtn: document.getElementById("randomBtn"),
   imageInput: document.getElementById("imageInput"),
   resetBtn: document.getElementById("resetBtn"),
+  viewPointCloudBtn: document.getElementById("viewPointCloudBtn"),
   startFloatingBtn: document.getElementById("startFloatingBtn"),
   startOverlay: document.getElementById("startOverlay"),
   frameView: document.getElementById("frameView"),
@@ -77,6 +79,23 @@ function updateStartOverlay() {
   el.startOverlay.classList.toggle("hidden", hide);
 }
 
+function kinetixPointCloudViewerUrl(plyAbsoluteUrl) {
+  const u = new URL("https://www.kinetix.cc/point-cloud-vis/");
+  u.searchParams.set("url", plyAbsoluteUrl);
+  u.searchParams.set("theme", "light");
+  return u.toString();
+}
+
+function updatePointCloudButton(plyUrl) {
+  if (plyUrl) {
+    state.pointcloudKinetixUrl = kinetixPointCloudViewerUrl(plyUrl);
+    el.viewPointCloudBtn.hidden = false;
+  } else {
+    state.pointcloudKinetixUrl = null;
+    el.viewPointCloudBtn.hidden = true;
+  }
+}
+
 function showSeedInViewport() {
   if (!state.seedImage) {
     return;
@@ -84,6 +103,7 @@ function showSeedInViewport() {
   state.sessionId = null;
   el.frameView.src = state.seedImage;
   updateStartOverlay();
+  updatePointCloudButton(null);
 }
 
 async function loadModelsAndDatasets() {
@@ -240,6 +260,7 @@ async function onStartSession() {
     state.sessionId = data.session_id;
     el.frameView.src = `data:image/png;base64,${data.frame_base64}`;
     updateStartOverlay();
+    updatePointCloudButton(data.pointcloud_ply_url || null);
     setGameStatus(`会话已启动: ${state.sessionId.slice(0, 8)}...`);
   } catch (err) {
     setGameStatus(`启动失败: ${err.message}`, true);
@@ -261,6 +282,7 @@ async function onResetSession() {
     state.sessionId = data.session_id;
     el.frameView.src = `data:image/png;base64,${data.frame_base64}`;
     updateStartOverlay();
+    updatePointCloudButton(data.pointcloud_ply_url || null);
     setGameStatus("会话已重置");
   } catch (err) {
     setGameStatus(`重置失败: ${err.message}`, true);
@@ -566,6 +588,7 @@ function bindEvents() {
   el.modelSelect.addEventListener("change", () => {
     state.modelId = el.modelSelect.value;
     syncSourceForModel(state.modelId);
+    updatePointCloudButton(null);
   });
 
   el.sourceSelect.addEventListener("change", () => {
@@ -588,6 +611,11 @@ function bindEvents() {
   el.randomBtn.addEventListener("click", onRandomImage);
   el.startFloatingBtn.addEventListener("click", onStartSession);
   el.resetBtn.addEventListener("click", onResetSession);
+  el.viewPointCloudBtn.addEventListener("click", () => {
+    if (state.pointcloudKinetixUrl) {
+      window.open(state.pointcloudKinetixUrl, "_blank", "noopener,noreferrer");
+    }
+  });
 
   bindKeyboard();
   bindWASDButtons();

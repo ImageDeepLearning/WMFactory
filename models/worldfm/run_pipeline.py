@@ -22,12 +22,19 @@ import os
 import sys
 from pathlib import Path
 
+import gc
+
 import cv2
 import numpy as np
 import torch
 from omegaconf import OmegaConf
 from PIL import Image
 from tqdm import trange
+
+# Disable cuDNN backend for scaled_dot_product_attention to avoid
+# "No execution plans support the graph" errors on certain GPU/cuDNN combos.
+# if hasattr(torch.backends.cuda, "enable_cudnn_sdp"):
+#     torch.backends.cuda.enable_cudnn_sdp(False)
 
 WORLDFM_ROOT = Path(__file__).resolve().parent
 SUBMODULES = WORLDFM_ROOT / "submodules"
@@ -136,6 +143,13 @@ def step1_panogen(image_path: str, output_dir: Path, *, cfg=None):
     )
 
     _log("Step1", f"Panorama generated: {np.array(pano_img).shape}")
+
+    del demo
+    gc.collect()
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache()
+    _log("Step1", "Released panogen pipeline memory")
+
     return pano_img
 
 
@@ -191,6 +205,13 @@ def step2_moge_pipeline(panorama_img, output_dir: Path, *, cfg=None, pretrained:
         out = model.infer(tensor, resolution_level=resolution_level, fov_x=fov_x_t, apply_mask=False)
         splitted_dist.extend(list(out["points"].norm(dim=-1).cpu().numpy()))
         splitted_masks.extend(list(out["mask"].cpu().numpy()))
+        del tensor, fov_x_t, out
+
+    del model, splitted_images
+    gc.collect()
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache()
+    _log("Step2", "Released MoGe model before merge")
 
     _log("Step2", "Merge panorama depth")
     merging_w = min(merge_max_w, width)
@@ -198,6 +219,10 @@ def step2_moge_pipeline(panorama_img, output_dir: Path, *, cfg=None, pretrained:
     panorama_depth, panorama_mask = moge_pano.merge_panorama_depth(
         merging_w, merging_h, splitted_dist, splitted_masks, extrinsics, intrinsics,
     )
+
+    del splitted_dist, splitted_masks
+    gc.collect()
+
     panorama_depth = panorama_depth.astype(np.float32)
     panorama_depth = cv2.resize(panorama_depth, (width, height), cv2.INTER_LINEAR)
     panorama_mask = cv2.resize(panorama_mask.astype(np.uint8), (width, height), cv2.INTER_NEAREST) > 0
@@ -207,13 +232,14 @@ def step2_moge_pipeline(panorama_img, output_dir: Path, *, cfg=None, pretrained:
         depth_raw[~panorama_mask] = panorama_depth[panorama_mask].max()
     depth_raw = depth_raw / 100.0
 
-    del model
-    if torch.cuda.is_available():
-        torch.cuda.empty_cache()
-
     pano_bgr = cv2.cvtColor(image_rgb, cv2.COLOR_RGB2BGR)
-    result = postprocess_panorama(pano_bgr, depth_raw, save_dir=None)
-    _log("Step2", f"PLY: {result.ply_xyz.shape[0]:,} points, conditions: {len(result.condition_images)}")
+    output_dir.mkdir(parents=True, exist_ok=True)
+    result = postprocess_panorama(pano_bgr, depth_raw, save_dir=output_dir)
+    _log(
+        "Step2",
+        f"PLY: {result.ply_xyz.shape[0]:,} points -> {output_dir / 'pointcloud.ply'}, "
+        f"conditions: {len(result.condition_images)}",
+    )
     return result
 
 

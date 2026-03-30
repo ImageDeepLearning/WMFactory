@@ -72,6 +72,7 @@ models/**/checkpoints/
 models/**/weights/
 models/**/pretrained/
 models/**/outputs/
+models/**/outputs*/
 models/**/outputs_*/
 models/**/output/
 models/**/results/

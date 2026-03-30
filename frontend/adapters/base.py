@@ -4,6 +4,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import Any, Dict, Optional
 
+SERVICE_PYTHON = "/home/mengfei/miniconda3/envs/WorldFM/bin/python"
 
 @dataclass
 class StepResult:
